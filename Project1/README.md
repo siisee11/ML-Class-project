@@ -1,4 +1,4 @@
-# Project1
+# Linear regression & logistic classification
 
 Numpy implementation of Linear regression and logistic classification.
 
