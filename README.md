@@ -4,7 +4,7 @@ Numpy implementation of basic machine learning technique.
 
 ## Requirement
 
-[Anaconda](https://www.anaconda.com/distribution/)
+[Anaconda3](https://www.anaconda.com/distribution/) environment needed.
 
 ## Usage
 
