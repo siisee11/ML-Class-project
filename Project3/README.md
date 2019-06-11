@@ -2,14 +2,16 @@
 
 Numpy implementation of model evaluation method.
 
-Precision, Recall, F-measure, nMap, nDCG
+Accuracy, Precision, Recall, F-measure, nMap, nDCG
+
+First 4 measures are in group A and rest 2 are in group B
 
 ## Usage
 
 ```
-# to run linear regression model.
+# to run group A evaluation.
 python A_main.py
 
-# to run logistic classification model.
+# to run group B evaluation.
 python B_main.py
 ```
