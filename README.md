@@ -1,10 +1,10 @@
-# Machine Learning Class Projects
+# Machine Learning Numpy implementation
 
-Foobar is a Python library for dealing with word pluralization.
+Numpy implementation of basic machine learning technique.
 
 ## Requirement
 
-[Anaconda3](https://www.anaconda.com/distribution/)
+[Anaconda](https://www.anaconda.com/distribution/)
 
 ## Usage
 
