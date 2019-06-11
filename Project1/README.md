@@ -13,4 +13,4 @@ python logistic_main.py
 ```
 
 ## Result
-![Accuracy](ML-numpy/Project1/acc.png)
+![Accuracy](siisee11/ML-numpy/Project1/acc.PNG)
