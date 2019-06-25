@@ -35,8 +35,10 @@ class Gaussian_NaiveBayesian():
 
     # P(Yes), P(No)
       # ======     Edit this    ======
-        self.prob_yes = 0
-        self.prob_no = 0
+        n_pos_data = len(pos_data)
+        n_neg_data = len(neg_data)
+        self.prob_yes = n_pos_data / len(Y_data)            # P('Yes') 임.
+        self.prob_no = n_neg_data / len(Y_data)             # P('No') 임.
       # ==============================
 
     # P(X | Yes), P(X | No)
@@ -110,20 +112,20 @@ class Gaussian_NaiveBayesian():
 
         # ==========       Edit here         =============
         for idx, f in enumerate(input_feature):
-            column_data = data[f]
+            column_data = data[f]               # 한 컬럼의 데이타 쪼로록 나옴 high, high, normal, high 이렇게
 
             if idx in self.Category_feature_idx:
-                attribute, count = np.unique(column_data, return_counts=True)
+                attribute, count = np.unique(column_data, return_counts=True)      # 위에 저렇게 4개였으면 (high, 3) , (normal, 1) 요롷게 나옴
 
                 for attr, cnt in zip(attribute, count):
                   # to avoid key Error in predict fuction.
                     if type(attr) == np.float64 or type(attr) == np.float32:
                         attr = str(int(attr))
-                    # likelihood['%s = %s' %(feature_name, value)] = ?
+
+                    likelihood['%s = %s' %(f, attr)] = np.round((cnt + 1) / (n + len(attribute)), 6)    # 라플라시안이니까 개수 + 1 / 전체개수 + 어트리뷰트 개수
             else:
-                pass
-                # likelihood['%s_mean' %(feature_name)] =  ?
-                # likelihood['%s_std' %(feature_name)] =  ?
+                likelihood['%s_mean' %(f)] =  np.mean(column_data)      # 연속데이터는 mean 하고 std (분산) 구해 놓고 나중에 util_answer에 gaussian_prob에서 이거 씀
+                likelihood['%s_std' %(f)] =  np.std(column_data)
         # ================================================
         return
 
@@ -175,13 +177,15 @@ class Gaussian_NaiveBayesian():
         for idx, f in enumerate(feature):
             val = tuple[f]
 
-            if idx in self.Category_feature_idx:
+            if idx in self.Category_feature_idx:                    # 불연속 변수일때
               # to avoid key Error in predict fuction.
                 if type(val) == np.float64 or type(val) == np.float32:
                     val = str(int(val))
-                pass
+                posterior *= likelihood['%s = %s' %(f, val)]            # 그냥 P(x(i) | Y) 이거 다 곱한다보면됨. (high, hot, overcast, false) 면 각각에 대한 확률 다 곱하기
 
-            else:
-                pass
+            else:               # 연속 변수일때
+                posterior *= Gaussian_prob(val, likelihood['%s_mean' %(f)], likelihood['%s_std' %(f)])
+
+        posterior *= prior      # 마지막에 prior P(Y) 곱해주는 걸로 마무리.
         # ===============================================================
         return posterior

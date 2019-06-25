@@ -9,6 +9,7 @@ def main():
     data_reader = CSVReader('./data/tennis.csv', encoding='utf-8')
 
     dataframe = data_reader.df
+    print(dataframe.shape)
     header = data_reader.header
 
     Y_data = dataframe['play']
@@ -20,6 +21,7 @@ def main():
     Dtree = Decision_Tree('entropy', max_depth=3)
     Dtree.fit(dataframe, 'Tennis')
     Feature, Type = Dtree.Find_Best_Feature(dataframe)
+
 
     print()
     print('Gini: \t', answer_Gini, '\tYour: ', round(Gini_index(Y_data), 6), '\t\t', (answer_Gini == round(Gini_index(Y_data), 6)))

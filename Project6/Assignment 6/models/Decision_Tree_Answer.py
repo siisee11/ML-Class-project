@@ -139,14 +139,34 @@ class Decision_Tree():
         # for all features in DataFrame,
         for idx, h in enumerate(input_feature):
         # ============       Edit here      ==================
+            impurity = 0                                    # 이 위에 포문에서 피쳐(컬럼) 한줄 씩 가져옴. Humidty, temp, outlook 이런거야
             # Category Feature Case
-            if idx in self.Category_feature_idx:
-                impurity = 0
+            if idx in self.Category_feature_idx:            # 이건 카테고리 데이터일때, 예를 들어 humidity high랑 normal 뿐이니까
+                values = []
+                total_value_len = len(Y_data)               # 총 데이터의 개수
+                for value in df[h].values:
+                    if value not in values:
+                        values.append(value)
+                                                            # 위에 3줄은 이제 그 특정 피쳐에서 값을 뽑아내는건데 df[h]에 이제 high, high, normal, high 이런거 들어있고
+                                                            # df[h]가 판다스라 어케 뽑아내는지 몰라서 저렇게함. values에 이제 high, normal 이렇게 담기게 되는 거
+                for value in values:
+                    data = Y_data[df[h].values == value]    # 이제 values에서 하나 하나 뽑아서 Y_data 값을 가져오는거 예를들어, df[h] = (h, h, n ,h) Y_data = (yes, no, yes, yes) 이면 value가 h 일때 data 는 (yes, no, yes)가 되는거지
+                    impurity += (len(data)/total_value_len) * impurity_func(data, self.criterion)   # impurity 구하는거는 이제 그 따로따로 임퓨리티 구해서 전체에서의 비율 곱하기
+                                                                                                    # 위 예제에서는 (3/4)*I(2, 1) + (1/4)*I(1,0) 이렇게 되는거
 
             # Numeric Feature Case
-            else:
-                split_value = Finding_split_point(df, h, self.criterion)
-                impurity = 0
+            else:                                                           # 컨티뉴 일때는
+                split_value = Finding_split_point(df, h, self.criterion)    # 이건 조교가 짜준코드 가장 적절한 스플릿 포인트를 찾아
+
+                less_idx = (df[h] < split_value)                            # 스플릿 포인트보다 작은거의 인덱스
+
+                y0 = Y_data[less_idx]                                       # 스플릿 포인트보다 작은 놈들의 Y_data
+                y1 = Y_data[~less_idx]                                      # 이건 반대
+
+                p0 = len(y0) / len(Y_data)
+                p1 = len(y1) / len(Y_data)
+
+                impurity = np.sum([p0 * impurity_func(y0, self.criterion), p1 * impurity_func(y1, self.criterion)])         # 두개의 impurity합이 이제 impurity가 됨/
         #=====================================================
             impurity_list.append(np.round(impurity, 6))
 
@@ -196,11 +216,11 @@ class Decision_Tree():
 
             for i, d in enumerate(distinct_data):
                 if type(d) == np.float64 or type(d) == np.float32:
-                    d = str(int(d))
+                    d = int(d)
                 print('\t' * node.depth, 'parent: ', self.branch_name, '\tDepth:', node.depth, '\t', i, 'th branch: ',d)
                 child_df = df[(col_data == d)]
                 child_node = Node(child_df, self.criterion, node.depth + 1, '%s = %s' % (Best_feature, d))
-                node.child[d] = child_node
+                node.child['%s' %d] = child_node
 
         elif feature_type == 'Numeric':
             split_value = Finding_split_point(df, Best_feature, self.criterion)
@@ -267,7 +287,12 @@ class Decision_Tree():
                 for keys in cur_node.child.keys():
                     split_value = float(keys.split(' ')[1])
                     key = (tuple[f] < split_value) and '< %.1f' % ((split_value)) or '>= %.1f' % ((split_value))
-            cur_node = cur_node.child[key]
+
+            try:
+                cur_node = cur_node.child[key]
+            except KeyError:
+                cur_node.label = 'Yes'
+                break
 
         return cur_node.label
 #==============================================================================================================

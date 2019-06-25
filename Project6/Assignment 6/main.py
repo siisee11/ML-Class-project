@@ -10,8 +10,8 @@ from random import sample
 def main():
 
     # ====   Edit this  =====
-    data_name = 'Heart'
-    #data_name = 'Carseats'
+    #data_name = 'Heart'
+    data_name = 'Carseats'
     # ======================
     assert data_name in ['Heart', 'Carseats']
 
@@ -42,7 +42,6 @@ def main():
     Accuracy = np.sum((pred == Test_y))/len(Test_y)
     print('Accuracy: ', round(Accuracy,4))
 
-    '''
     Nb = Gaussian_NaiveBayesian()
     Nb.fit(Train, data_name)
 
@@ -50,7 +49,6 @@ def main():
 
     Accuracy = np.sum((pred == Test_y)) / len(Test_y)
     print('Accuracy: ', round(Accuracy,4))
-    '''
 
 if __name__ == '__main__':
     main()
