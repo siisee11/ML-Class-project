@@ -1,4 +1,4 @@
-# Project1
+# Linear regression & logistic classification
 
 Numpy implementation of Linear regression and logistic classification.
 
@@ -11,3 +11,6 @@ python linear_main.py
 # to run logistic classification model.
 python logistic_main.py
 ```
+
+## Result
+![Accuracy](siisee11/ML-numpy/Project1/acc.PNG)
